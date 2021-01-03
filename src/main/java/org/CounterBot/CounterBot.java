@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 public class CounterBot extends TelegramLongPollingBot {
-    Status stat ;
+    Status stat;
 
     public CounterBot() {
         this.stat = new Status();
@@ -39,11 +39,12 @@ public class CounterBot extends TelegramLongPollingBot {
         // We check if the update has a message and the message has text
         Message message = update.getMessage();
 
-        if (message != null && message.hasText()) {
-
-            stat.incCount(update.getMessage().getChatId());
-            if (message.getText().equals("/help"))
-                sendMsg(message, "Cry, bitch");
+        if (message == null || !message.hasText()) {
+            return;
+        }
+        stat.incCount(update.getMessage().getChatId(), message.getFrom().getId());
+        if (message.getText().equals("/help"))
+            sendMsg(message, "Cry, bitch");
 //            else if (update.getMessage().getText().equals("/start")) {
 //                try {
 //                    execute(sendSex(update.getMessage().getChatId()));
@@ -51,9 +52,11 @@ public class CounterBot extends TelegramLongPollingBot {
 //                    e.printStackTrace();
 //                }
 //            }
-            else if (message.getText().equals("/status")) {
-                sendMsg(message, String.valueOf(stat.getCount(update.getMessage().getChatId())));
-            }
+        else if (message.getText().equals("/status")) {
+
+            sendMsg(message, stat.getCount(update.getMessage().getChatId(), message.getFrom().getId()));
+        }
+
 //
 //            else if(update.hasCallbackQuery()){
 //                SendMessage here = new SendMessage();
@@ -66,7 +69,6 @@ public class CounterBot extends TelegramLongPollingBot {
 //                }
 //            else sendMsg(message, "Hy");
 
-        }
     }
 
 
@@ -82,6 +84,7 @@ public class CounterBot extends TelegramLongPollingBot {
             e.printStackTrace();
         }
     }
+
     public SendMessage sendSex(long chatId) {
 
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
@@ -108,12 +111,6 @@ public class CounterBot extends TelegramLongPollingBot {
 
         return here;
     }
-
-
-
-
-
-
 
 
 }

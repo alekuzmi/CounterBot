@@ -7,24 +7,24 @@ public class Status {
 
 
     public Status() {
-        this.status = new HashMap <Long, Integer>();
+        this.statusChat = new HashMap<Long, Map<Integer , Integer>>();
     }
 
-    public synchronized int getCount(long ChatId) {
-        return status.getOrDefault(ChatId, 0);
+    public synchronized String getCount(long ChatId, int  userId) {
+
+        return userId + " send " + statusChat.get(ChatId).get(userId) + " message";
     }
 
-    public synchronized void incCount(long ChatId) {
-        if (status.containsKey(ChatId)) {
-            int count = status.get(ChatId);
-            status.put(ChatId, count+1);
+    public synchronized void incCount(long ChatId, int userId) {
 
-        } else {
-            status.put(ChatId, 1);
-        }
+        Map <Integer, Integer> statusUser= statusChat.getOrDefault(ChatId, new HashMap<Integer, Integer>(){{put(userId, 0);}});
+        int count=statusUser.getOrDefault(userId, 0);
+        statusUser.put(userId,count+1);
+        statusChat.put(ChatId, statusUser);
+
     }
 
-    Map<Long, Integer> status;
+    Map<Long, Map<Integer, Integer>> statusChat;
 
 
 
