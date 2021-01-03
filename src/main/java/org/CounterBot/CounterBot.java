@@ -35,13 +35,12 @@ public class CounterBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
 
-
-        // We check if the update has a message and the message has text
         Message message = update.getMessage();
 
         if (message == null || !message.hasText()) {
             return;
         }
+        stat.setIdName(message.getFrom().getId(), message.getFrom().getUserName());
         stat.incCount(update.getMessage().getChatId(), message.getFrom().getId());
         if (message.getText().equals("/help"))
             sendMsg(message, "Cry, bitch");
@@ -74,7 +73,7 @@ public class CounterBot extends TelegramLongPollingBot {
 
     private void sendMsg(Message message, String text) {
         SendMessage sendMessage = new SendMessage();
-        sendMessage.enableMarkdown(true);
+        sendMessage.enableMarkdown(false);
         sendMessage.setChatId(message.getChatId().toString());
         sendMessage.setReplyToMessageId(message.getMessageId());
         sendMessage.setText(text);
