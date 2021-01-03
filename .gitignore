@@ -3,3 +3,7 @@
 /build/
 /out/
 
+/gradlew.bat
+/gradlew
+/CounterBot.iml
+/gradle/wrapper/
