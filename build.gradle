@@ -1,0 +1,20 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+
+
+application {
+    mainClass = 'org.CounterBot.Main'
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+
+}
+
+dependencies {
+    compile 'org.telegram:telegrambots:5.0.1'
+}
+
+
