@@ -24,7 +24,7 @@ public class CounterBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return "counter-test-bot";
+        return System.getenv("COUNTER_BOT_NAME");
     }
 
     @Override
