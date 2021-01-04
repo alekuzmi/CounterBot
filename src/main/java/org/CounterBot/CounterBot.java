@@ -24,24 +24,27 @@ public class CounterBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return "CounterBot";
+        return "counter-test-bot";
     }
 
     @Override
     public String getBotToken() {
-        return "1335488648:AAE8LNv_dUlowl5sb8TCbUHNxtELtsvUMak";
+        String token = System.getenv("COUNTER_BOT_TOKEN");
+        return token;
+
     }
 
     @Override
     public void onUpdateReceived(Update update) {
 
         Message message = update.getMessage();
+        stat.setIdName(message.getFrom().getId(), message.getFrom().getUserName());
+        stat.incCount(update.getMessage().getChatId(), message.getFrom().getId());
 
         if (message == null || !message.hasText()) {
             return;
         }
-        stat.setIdName(message.getFrom().getId(), message.getFrom().getUserName());
-        stat.incCount(update.getMessage().getChatId(), message.getFrom().getId());
+
         if (message.getText().equals("/help"))
             sendMsg(message, "Cry, bitch");
 //            else if (update.getMessage().getText().equals("/start")) {
