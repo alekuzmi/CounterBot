@@ -1,4 +1,5 @@
-package org.CounterBot;
+package org.CounterBot.tg;
+
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -12,9 +13,28 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 import java.util.logging.Level;
 
 public class CounterBot extends TelegramLongPollingBot {
+
+
+    private static volatile CounterBot instance;
+
+    public static CounterBot getInstance() {
+        CounterBot localInstance = instance;
+        if (localInstance == null) {
+            synchronized (CounterBot.class) {
+                localInstance = instance;
+                if (localInstance == null) {
+                    instance = localInstance = new CounterBot();
+                }
+            }
+        }
+        return localInstance;
+    }
+
+
     Status stat;
 
     public CounterBot() {
@@ -56,7 +76,10 @@ public class CounterBot extends TelegramLongPollingBot {
 //            }
         else if (message.getText().equals("/status")) {
 
-            sendMsg(message, stat.getCount(update.getMessage().getChatId(), message.getFrom().getId()));
+                sendMsg(message, stat.getCount(update.getMessage().getChatId()));
+
+
+
         }
 
 //
@@ -74,7 +97,7 @@ public class CounterBot extends TelegramLongPollingBot {
     }
 
 
-    private void sendMsg(Message message, String text) {
+    protected void sendMsg(Message message, String text) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.enableMarkdown(false);
         sendMessage.setChatId(message.getChatId().toString());
@@ -85,6 +108,20 @@ public class CounterBot extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
+    }
+
+    protected void sendMsg(Long ChatId, String text) {
+
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.enableMarkdown(false);
+        sendMessage.setChatId(ChatId.toString());
+        sendMessage.setText(text);
+        try {
+            execute(sendMessage);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public SendMessage sendSex(long chatId) {
@@ -115,4 +152,12 @@ public class CounterBot extends TelegramLongPollingBot {
     }
 
 
+    public synchronized void sendAllStatistic() {
+
+        ArrayList<Long> str = stat.getChatsId();
+        for (int i = 0; i < str.size(); i++) {
+            sendMsg(str.get(i), stat.getCount(str.get(i)));
+        }
+    }
 }
+

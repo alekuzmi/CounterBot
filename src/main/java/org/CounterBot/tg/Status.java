@@ -1,10 +1,8 @@
-package org.CounterBot;
+package org.CounterBot.tg;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
-public class Status {
+class Status {
     Map<Long, Map<Integer, Integer>> statusChat;
     Map<Integer, String> idName;
 
@@ -18,8 +16,9 @@ public class Status {
         idName.put(userId, userName);
     }
 
-    public synchronized String getCount(long chatId, int  userId) {
+    public synchronized String getCount(long chatId) {
         Map <Integer, Integer> map = statusChat.get(chatId);
+
         StringBuilder str = new StringBuilder();
 
             Iterator<Map.Entry<Integer, Integer>> iterator = map.entrySet().iterator();
@@ -33,13 +32,9 @@ public class Status {
                 str.append(keyName+" send "); //ключ
                 int value = pair.getValue();
                 str.append(value+" message \n"); //значение
-
             }
 
         return str.toString();
-
-
-//        return userId + " send " + statusChat.get(chatId).get(userId) + " message";
     }
 
     public synchronized void incCount(long ChatId, int userId) {
@@ -49,6 +44,19 @@ public class Status {
         statusUser.put(userId,count+1);
         statusChat.put(ChatId, statusUser);
 
+    }
+    public synchronized ArrayList<Long> getChatsId () {
+        ArrayList<Long> str = new ArrayList<Long>();
+        Iterator<Map.Entry<Long, Map<Integer, Integer>>> iterator = statusChat.entrySet().iterator();
+
+        while (iterator.hasNext())
+        {
+            Map.Entry<Long, Map<Integer , Integer>> pair = iterator.next();
+            Long key = pair.getKey();
+            str.add(key);
+
+        }
+        return str;
     }
 
 
