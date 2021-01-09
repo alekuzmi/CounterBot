@@ -10,7 +10,7 @@ import java.util.TimerTask;
 
 
 public class StatusByTime extends TimerTask implements Runnable {
-    Long timeSent;
+    Long timeSent=System.currentTimeMillis();
 
 
 
@@ -18,15 +18,15 @@ public class StatusByTime extends TimerTask implements Runnable {
     @Override
     public void run() {
 
-//            if (timeSent >= System.currentTimeMillis() - 15000) {
+            if (timeSent <= (System.currentTimeMillis() - 60000)) {
 
                 CounterBot status = CounterBot.getInstance();
 
                 status.sendAllStatistic();
-//                timeSent = System.currentTimeMillis();
-//            } else return;
+                timeSent = System.currentTimeMillis();
+            } else return;
 
-        System.out.println("hy");
+        
 
 
     }
