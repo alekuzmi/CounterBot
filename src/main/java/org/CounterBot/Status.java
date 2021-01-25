@@ -38,7 +38,6 @@ public class Status {
 
         return str.toString();
 
-
 //        return userId + " send " + statusChat.get(chatId).get(userId) + " message";
     }
 
@@ -50,9 +49,6 @@ public class Status {
         statusChat.put(ChatId, statusUser);
 
     }
-
-
-
 
 
 }

@@ -37,40 +37,39 @@ public class CounterBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
 
-        Message message = update.getMessage();
-        stat.setIdName(message.getFrom().getId(), message.getFrom().getUserName());
-        stat.incCount(update.getMessage().getChatId(), message.getFrom().getId());
 
-        if (message == null || !message.hasText()) {
-            return;
+
+        if(update.hasMessage()){
+            Message message = update.getMessage();
+            stat.setIdName(message.getFrom().getId(), message.getFrom().getUserName());
+            stat.incCount(update.getMessage().getChatId(), message.getFrom().getId());
+
+            if(update.getMessage().hasText()) {
+                if (update.getMessage().getText().equals("Hello")) {
+                    try {
+                        execute(sendSex(update.getMessage().getChatId()));
+                    } catch (TelegramApiException e) {
+                        e.printStackTrace();
+                    }
+                } else if (update.getMessage().getText().equals("/help")) {
+                    sendMsg(update.getMessage().getChatId(), "Cry, bitch");
+                } else if (message.getText().equals("/status")) {
+
+                    sendMsg(update.getMessage().getChatId(), stat.getCount(update.getMessage().getChatId(), message.getFrom().getId()));
+
+                }
+            }
+
+        }else if(update.hasCallbackQuery()){
+            try {
+                SendMessage ans = new SendMessage();
+                ans.setText(update.getCallbackQuery().getData());
+                ans.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
+                execute(ans);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
         }
-
-        if (message.getText().equals("/help"))
-            sendMsg(message, "Cry, bitch");
-//            else if (update.getMessage().getText().equals("/start")) {
-//                try {
-//                    execute(sendSex(update.getMessage().getChatId()));
-//                } catch (TelegramApiException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-        else if (message.getText().equals("/status")) {
-
-            sendMsg(message, stat.getCount(update.getMessage().getChatId(), message.getFrom().getId()));
-        }
-
-//
-//            else if(update.hasCallbackQuery()){
-//                SendMessage here = new SendMessage();
-//                here.setText(update.getCallbackQuery().getData());
-//                here.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
-//                try {
-//                    execute(here);
-//                } catch (TelegramApiException e) {
-//                    e.printStackTrace();
-//                }
-//            else sendMsg(message, "Hy");
-
     }
 
 
@@ -114,5 +113,17 @@ public class CounterBot extends TelegramLongPollingBot {
         return here;
     }
 
+    protected void sendMsg(Long ChatId, String text) {
+
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.enableMarkdown(false);
+        sendMessage.setChatId(ChatId.toString());
+        sendMessage.setText(text);
+        try {
+            execute(sendMessage);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
